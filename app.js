@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const usersRouter = require("./routers/usersRouter");
+const chatsRouter = require("./routers/chatsRouter");
 const app = express();
 
 app.use(cors());
@@ -22,5 +23,6 @@ try {
 }
 
 app.use("/api/users", usersRouter);
+app.use("/api/chats", chatsRouter);
 
 app.listen(3000);
