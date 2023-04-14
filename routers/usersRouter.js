@@ -5,7 +5,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     let users = await models.User.find({});
     users = users.map(({_id, login, userName}) => {
-        return { id: _id, login, userName };
+        return { _id, login, userName };
     });
     res.send(users);
 });
@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
     let user = await models.User.findOne({_id: id});
-    res.send({id: user._id, login: user.login, userName: user.userName});
+    res.send({_id: user._id, login: user.login, userName: user.userName});
 });
 
 router.post('/', (req, res) => {
