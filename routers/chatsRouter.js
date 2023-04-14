@@ -17,7 +17,9 @@ router.post('/', async (req, res) => {
     if (!req.body) res.status(400).send("Gde body?");
     const { firstUserId, secondUserId } = req.body;
 
-    const existingChat = await models.Chat.findOne({ firstUserId, secondUserId });
+    const existingChat = 
+    await models.Chat.findOne({ firstUserId, secondUserId }) || 
+    await models.Chat.findOne({ firstUserId: secondUserId, secondUserId: firstUserId });
 
     if (existingChat) {
         res.send(existingChat);
