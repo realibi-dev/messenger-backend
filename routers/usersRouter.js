@@ -2,19 +2,18 @@ const express = require("express");
 const models = require("../Models");
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    models.User.find({}, (err, result) => {
-        if (err) return err;
-        res.send(result);
-    })
+router.get('/', async (req, res) => {
+    let users = await models.User.find({});
+    users = users.map(({_id, login, userName}) => {
+        return { id: _id, login, userName };
+    });
+    res.send(users);
 });
 
-router.get('/:id', (req, res) => {
-    const { id } = req.params.id;
-    models.User.findOne({_id: id}, (err, result) => {
-        if (err) return err;
-        res.send(result);
-    })
+router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    let user = await models.User.findOne({_id: id});
+    res.send({id: user._id, login: user.login, userName: user.userName});
 });
 
 router.post('/', (req, res) => {
@@ -24,22 +23,20 @@ router.post('/', (req, res) => {
     const user = new models.User({login, password, userName});
 
     user.save();
-    res.status(201).send();
+    res.status(201).json({ok: true});
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
     if (!req.body) res.status(400).send("Gde body?");
     const { login, password } = req.body;
 
-    models.User.findOne({login, password}, (err, doc) => {
-        if (err) return res.send(err);
+    const doc = await models.User.findOne({ login, password });
 
-        if (doc !== null) {
-            res.send(doc);
-        } else {
-            res.status(400).send("User not found!");
-        }
-    });
+    if (doc) {
+        res.send(doc);
+    } else {
+        res.status(400).send("User not found!");
+    }
 });
 
 module.exports = router;
