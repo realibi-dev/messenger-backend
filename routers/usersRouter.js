@@ -33,7 +33,7 @@ router.post('/login', async (req, res) => {
     const doc = await models.User.findOne({ login, password });
 
     if (doc) {
-        res.send({ok: true, ...doc});
+        res.send({ok: true, user: doc});
     } else {
         res.status(400).send({ ok: false });
     }
